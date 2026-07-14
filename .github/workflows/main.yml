@@ -1,0 +1,25 @@
+name: Automated Daily Commit
+
+on:
+  schedule:
+    - cron: '0 12 * * *' # Runs every day at 12:00 PM UTC
+  workflow_dispatch: # Allows you to run it manually anytime
+
+jobs:
+  make-commit:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Update a text file
+      run: |
+        echo "Last automated check: $(date)" > last_run.txt
+
+    - name: Commit and Push changes
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.name "github-actions[bot]@://github.com"
+        git add last_run.txt
+        git commit -m "chore: automated daily update" || exit 0
+        git push
